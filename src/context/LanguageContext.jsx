@@ -779,29 +779,7 @@ const translations = {
     deleteBlog: "ब्लॉग हटाएं",
     like: "लाइक",
     unlike: "अनलाइक",
-    comments: "टिप्पणियां",
-
-    // Admin panel
-    adminPanel: "एडमिन पैनल",
-    manageUsers: "उपयोगकर्ताओं को प्रबंधित करें",
-    manageQuizzes: "क्विज़ प्रबंधित करें",
-    manageBlogs: "ब्लॉग प्रबंधित करें",
-    viewPayments: "भुगतान देखें",
-    viewWinners: "विजेताओं को देखें",
-
-    // Error messages
-    networkError: "नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।",
-    invalidCredentials: "अमान्य क्रेडेंशियल",
-    userNotFound: "उपयोगकर्ता नहीं मिला",
-    quizNotFound: "क्विज़ नहीं मिला",
-    paymentRequired: "भुगतान आवश्यक",
-    insufficientPermissions: "अपर्याप्त अनुमतियां",
-
-    // Success messages
-    quizCompleted: "क्विज़ सफलतापूर्वक पूरा हुआ!",
-    blogCreated: "ब्लॉग सफलतापूर्वक बनाया गया",
-    blogUpdated: "ब्लॉग सफलतापूर्वक अपडेट किया गया",
-    blogDeleted: "ब्लॉग सफलतापूर्वक हटाया गया"
+    comments: "टिप्पणियां"
   }
 };
 
