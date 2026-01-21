@@ -1,7 +1,7 @@
 // frontend/src/pages/WinnersPage.jsx
 // At the top of your file
 import * as motion from "motion/react-client";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useParams } from "react-router-dom";
 import Confetti from "react-confetti";
 import DarkModeToggle from "../components/DarkModeToggle";
@@ -27,6 +27,8 @@ export default function WinnersPage() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowDimensions, setWindowDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
 
+  const autoRefreshRef = useRef(null);
+
   // Handle window resize for confetti
   useEffect(() => {
     const handleResize = () => {
@@ -47,24 +49,23 @@ export default function WinnersPage() {
 
   useEffect(() => {
     loadWinners(selectedDate);
-    
-    // Setup auto-refresh for today's quiz (check every 30 seconds after 30 minutes)
-    const isToday = selectedDate === new Date().toISOString().split('T')[0];
-    if (isToday) {
-      const thirtyMinutesMs = 30 * 60 * 1000;
-      const timer = setTimeout(() => {
-        // After 30 minutes, refresh every 30 seconds
-        const refreshInterval = setInterval(() => {
-          loadWinners(selectedDate);
-        }, 30000);
-        setAutoRefreshTimer(refreshInterval);
-      }, thirtyMinutesMs);
-      
-      return () => {
-        clearTimeout(timer);
-        if (autoRefreshTimer) clearInterval(autoRefreshTimer);
-      };
-    }
+
+    const today = new Date().toISOString().split("T")[0];
+    if (selectedDate !== today) return;
+
+    const timeout = setTimeout(() => {
+      autoRefreshRef.current = setInterval(() => {
+        loadWinners(selectedDate);
+      }, 30000);
+    }, 30 * 60 * 1000);
+
+    return () => {
+      clearTimeout(timeout);
+      if (autoRefreshRef.current) {
+        clearInterval(autoRefreshRef.current);
+        autoRefreshRef.current = null;
+      }
+    };
   }, [selectedDate]);
 
   const loadWinners = async (dateParam) => {
