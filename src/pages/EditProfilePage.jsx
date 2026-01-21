@@ -121,22 +121,9 @@ const handleSubmit = async (e) => {
 
     setSuccess("Profile updated successfully!");
     
-    // After profile update, redirect based on whether user just registered
-    // Check if user has completed required fields (considering immutable fields)
-    const hasRequiredFields = form.fullName && form.username && 
-      (form.age || (user?.age !== null && user?.age !== undefined && user?.age !== '')) && 
-      (form.gender || (user?.gender !== null && user?.gender !== undefined && user?.gender !== '')) && 
-      (form.schoolName || (user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== '')) && 
-      (form.classGrade || (user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== ''));
-    
-    if (hasRequiredFields) {
-      // All required fields filled - redirect to home
-      setTimeout(() => navigate("/home"), 2000);
-    } else {
-      // Still missing required fields - stay on edit profile page
-      // Show warning
-      setError("Please fill all required fields (marked with *) to continue.");
-    }
+    // Since all required fields are now completed during registration,
+    // users can always go back to home after updating profile
+    setTimeout(() => navigate("/home"), 2000);
   } catch (err) {
     console.error(err);
     setError(err.response?.data?.message || "Failed to update profile");
@@ -256,7 +243,7 @@ const handleSubmit = async (e) => {
 </div>
 
 <div className="input-group">
-  <label>{t('age')} <span style={{ color: "red" }}>*</span></label>
+  <label>{t('age')} {(user?.age === null || user?.age === undefined || user?.age === '') && <span style={{ color: "red" }}>*</span>}</label>
   <input
     type="number"
     name="age"
@@ -265,7 +252,7 @@ const handleSubmit = async (e) => {
     min={13}
     max={99}
     placeholder={t('enterAge')}
-    required
+    required={!(user?.age !== null && user?.age !== undefined && user?.age !== '')}
     disabled={user?.age !== null && user?.age !== undefined && user?.age !== ''}
     style={{
       backgroundColor: (user?.age !== null && user?.age !== undefined && user?.age !== '') ? '#f8f9fa' : 'white',
@@ -279,14 +266,14 @@ const handleSubmit = async (e) => {
 
 
 <div className="input-group">
-  <label>{t('schoolCoaching')} <span style={{ color: "red" }}>*</span></label>
+  <label>{t('schoolCoaching')} {(user?.schoolName === null || user?.schoolName === undefined || user?.schoolName === '') && <span style={{ color: "red" }}>*</span>}</label>
   <input
     type="text"
     name="schoolName"
     value={form.schoolName}
     onChange={handleChange}
     placeholder={t('enterSchool')}
-    required
+    required={!(user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== '')}
     disabled={user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== ''}
     style={{
       backgroundColor: (user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== '') ? '#f8f9fa' : 'white',
@@ -299,12 +286,12 @@ const handleSubmit = async (e) => {
 </div>
 
 <div className="input-group">
-  <label>{t('classGrade')} <span style={{ color: "red" }}>*</span></label>
+  <label>{t('classGrade')} {(user?.classGrade === null || user?.classGrade === undefined || user?.classGrade === '') && <span style={{ color: "red" }}>*</span>}</label>
   <select 
     name="classGrade" 
     value={form.classGrade} 
     onChange={handleChange} 
-    required
+    required={!(user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== '')}
     disabled={user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== ''}
     style={{
       backgroundColor: (user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== '') ? '#f8f9fa' : 'white',
@@ -322,12 +309,12 @@ const handleSubmit = async (e) => {
 </div>
 
 <div className="input-group">
-  <label>{t('gender')} <span style={{ color: "red" }}>*</span></label>
+  <label>{t('gender')} {(user?.gender === null || user?.gender === undefined || user?.gender === '') && <span style={{ color: "red" }}>*</span>}</label>
   <select 
     name="gender" 
     value={form.gender} 
     onChange={handleChange} 
-    required
+    required={!(user?.gender !== null && user?.gender !== undefined && user?.gender !== '')}
     disabled={user?.gender !== null && user?.gender !== undefined && user?.gender !== ''}
     style={{
       backgroundColor: (user?.gender !== null && user?.gender !== undefined && user?.gender !== '') ? '#f8f9fa' : 'white',

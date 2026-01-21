@@ -11,7 +11,16 @@ import "../styles/global.css";
 
 export default function RegisterPage() {
   const [step, setStep] = useState(1); // 1: Form, 2: SMS OTP, 3: Email OTP
-  const [form, setForm] = useState({ name: "", phone: "", email: "", password: "" });
+  const [form, setForm] = useState({ 
+    name: "", 
+    phone: "", 
+    email: "", 
+    password: "",
+    age: "",
+    gender: "",
+    schoolName: "",
+    classGrade: ""
+  });
   const [otpMethod, setOtpMethod] = useState("sms"); // 'sms' or 'email'
   const [smsSessionId, setSmsSessionId] = useState("");
   const [smsOtp, setSmsOtp] = useState("");
@@ -58,12 +67,16 @@ export default function RegisterPage() {
 
     try {
       // Basic validation
-      if (!form.name || !form.password) {
+      if (!form.name || !form.password || !form.age || !form.gender || !form.schoolName || !form.classGrade) {
         setError("Please fill in all required fields");
         return;
       }
       if (form.password.length < 6) {
         setError("Password must be at least 6 characters");
+        return;
+      }
+      if (!form.age || form.age < 13 || form.age > 99) {
+        setError("Please enter a valid age (13-99)");
         return;
       }
 
@@ -192,6 +205,10 @@ export default function RegisterPage() {
         otp: smsOtp,
         name: form.name,
         password: form.password,
+        age: form.age,
+        gender: form.gender,
+        schoolName: form.schoolName,
+        classGrade: form.classGrade
       };
       if (form.email && form.email.trim() !== "") {
         payload.email = form.email;
@@ -199,8 +216,8 @@ export default function RegisterPage() {
 
       const registerRes = await register(payload);
       if (registerRes?.data?.user || registerRes?.data?.token || registerRes?.data?.accessToken) {
-        // Redirect to edit-profile after registration to complete profile
-        nav("/edit-profile");
+        // Registration successful - redirect to home
+        nav("/home");
         return;
       }
 
@@ -225,20 +242,24 @@ export default function RegisterPage() {
         return;
       }
 
-      // Verify email OTP first
-      const res = await API.post("/auth/verify-email-otp", {
+      // Verify email OTP and register
+      const res = await API.post("/auth/register", {
         email: form.email,
         otp: emailOtp,
         name: form.name,
         password: form.password,
+        age: form.age,
+        gender: form.gender,
+        schoolName: form.schoolName,
+        classGrade: form.classGrade,
         ...(form.phone && { phone: form.phone }) // include phone only if provided
       });
-      const token = res?.data?.token || res?.data?.accessToken;
+      const token = res?.data?.accessToken;
       if (token) {
         localStorage.setItem("token", token);
       }
-      // Redirect to edit-profile after registration to complete profile
-      nav("/edit-profile");
+      // Redirect to home after successful registration
+      nav("/home");
       return;
     } catch (err) {
       console.error(err);
@@ -326,6 +347,58 @@ export default function RegisterPage() {
                 <small style={{ color: '#999', fontSize: '12px', marginTop: '-8px', marginBottom: '16px', display: 'block' }}>
                   Choose any one method — you'll receive an OTP via the selected method.
                 </small>
+
+                <div className="input-group">
+                  <label>Age *</label>
+                  <input
+                    type="number"
+                    placeholder="Enter your age"
+                    value={form.age}
+                    onChange={(e) => setForm({ ...form, age: e.target.value })}
+                    min="13"
+                    max="99"
+                    required
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label>Gender *</label>
+                  <select
+                    value={form.gender}
+                    onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                    required
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div className="input-group">
+                  <label>School/Coaching Name *</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your School/Coaching name"
+                    value={form.schoolName}
+                    onChange={(e) => setForm({ ...form, schoolName: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label>Class/Grade *</label>
+                  <select
+                    value={form.classGrade}
+                    onChange={(e) => setForm({ ...form, classGrade: e.target.value })}
+                    required
+                  >
+                    <option value="">Select Class</option>
+                    <option value="10th">10th Class</option>
+                    <option value="12th">12th Class</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
 
                 <div className="input-group">
                   <label>Password *</label>
