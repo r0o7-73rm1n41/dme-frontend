@@ -67,7 +67,8 @@ API.interceptors.response.use(
     console.error("🚨 API Error:", error?.response || error);
 
     const message =
-      error?.response?.data?.message ||
+      (typeof error?.response?.data === 'string' ? error.response.data :
+       error?.response?.data?.message) ||
       error?.message ||
       "Network error occurred. Please try again.";
 
