@@ -30,8 +30,8 @@ export default function PaymentPage() {
 
         // If already eligible, redirect to quiz or home
         if (res.data.eligible) {
-          const quizRes = await API.get('/quiz/status');
-          if (quizRes.data.state === 'LIVE') {
+          const quizRes = await API.get('/payments/quiz-status');
+          if (quizRes.data.quizAvailable && quizRes.data.eligible) {
             navigate('/quiz');
           } else {
             navigate('/');

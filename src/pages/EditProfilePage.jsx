@@ -121,9 +121,14 @@ const handleSubmit = async (e) => {
 
     setSuccess("Profile updated successfully!");
     
-    // Since all required fields are now completed during registration,
-    // users can always go back to home after updating profile
-    setTimeout(() => navigate("/home"), 2000);
+    // Check if profile is now complete and redirect accordingly
+    if (data.user.profileCompleted && !user?.profileCompleted) {
+      // Profile just completed - redirect to payment
+      setTimeout(() => navigate("/payment"), 2000);
+    } else {
+      // Profile was already complete or just updated - go to home
+      setTimeout(() => navigate("/home"), 2000);
+    }
   } catch (err) {
     console.error(err);
     setError(err.response?.data?.message || "Failed to update profile");

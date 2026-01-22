@@ -216,13 +216,13 @@ export default function RegisterPage() {
 
       const registerRes = await register(payload);
       if (registerRes?.data?.user || registerRes?.data?.token || registerRes?.data?.accessToken) {
-        // Registration successful - redirect to home
-        nav("/home");
+        // Registration successful - redirect to edit profile to complete profile
+        nav("/edit-profile");
         return;
       }
 
       // If registration successful but no immediate redirect, show success
-      nav("/home");
+      nav("/edit-profile");
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || err.message || "Registration failed");
@@ -258,8 +258,8 @@ export default function RegisterPage() {
       if (token) {
         localStorage.setItem("token", token);
       }
-      // Redirect to home after successful registration
-      nav("/home");
+      // Redirect to edit profile after successful registration
+      nav("/edit-profile");
       return;
     } catch (err) {
       console.error(err);
