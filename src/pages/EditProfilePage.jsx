@@ -248,90 +248,87 @@ const handleSubmit = async (e) => {
 </div>
 
 <div className="input-group">
-  <label>{t('age')} {(user?.age === null || user?.age === undefined || user?.age === '') && <span style={{ color: "red" }}>*</span>}</label>
-  <input
-    type="number"
-    name="age"
-    value={form.age}
-    onChange={handleChange}
-    min={13}
-    max={99}
-    placeholder={t('enterAge')}
-    required={!(user?.age !== null && user?.age !== undefined && user?.age !== '')}
-    disabled={user?.age !== null && user?.age !== undefined && user?.age !== ''}
-    style={{
-      backgroundColor: (user?.age !== null && user?.age !== undefined && user?.age !== '') ? '#f8f9fa' : 'white',
-      cursor: (user?.age !== null && user?.age !== undefined && user?.age !== '') ? 'not-allowed' : 'text'
-    }}
-  />
-  {user?.age !== null && user?.age !== undefined && user?.age !== '' && (
-    <small style={{ color: '#6c757d', fontSize: '12px' }}>Age cannot be changed once set</small>
-  )}
+              <label>{t('age')} {(user?.profileCompleted === false || (user?.age === null || user?.age === undefined || user?.age === '')) && <span style={{ color: "red" }}>*</span>}</label>
+              <input
+                type="number"
+                name="age"
+                value={form.age}
+                onChange={handleChange}
+                min={13}
+                max={99}
+                placeholder={t('enterAge')}
+                required={user?.profileCompleted === false || !(user?.age !== null && user?.age !== undefined && user?.age !== '')}
+                disabled={user?.profileCompleted === true}
+                style={{
+                  backgroundColor: user?.profileCompleted === true ? '#f8f9fa' : 'white',
+                  cursor: user?.profileCompleted === true ? 'not-allowed' : 'text'
+                }}
+              />
+              {user?.profileCompleted === true && (
+                <small style={{ color: '#6c757d', fontSize: '12px' }}>Age cannot be changed once profile is completed</small>
 </div>
 
 
 <div className="input-group">
-  <label>{t('schoolCoaching')} {(user?.schoolName === null || user?.schoolName === undefined || user?.schoolName === '') && <span style={{ color: "red" }}>*</span>}</label>
-  <input
-    type="text"
-    name="schoolName"
-    value={form.schoolName}
-    onChange={handleChange}
-    placeholder={t('enterSchool')}
-    required={!(user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== '')}
-    disabled={user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== ''}
-    style={{
-      backgroundColor: (user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== '') ? '#f8f9fa' : 'white',
-      cursor: (user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== '') ? 'not-allowed' : 'text'
-    }}
-  />
-  {user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== '' && (
-    <small style={{ color: '#6c757d', fontSize: '12px' }}>School/Coaching name cannot be changed once set</small>
-  )}
+              <label>{t('schoolCoaching')} {(user?.profileCompleted === false || (user?.schoolName === null || user?.schoolName === undefined || user?.schoolName === '')) && <span style={{ color: "red" }}>*</span>}</label>
+              <input
+                type="text"
+                name="schoolName"
+                value={form.schoolName}
+                onChange={handleChange}
+                placeholder={t('enterSchool')}
+                required={user?.profileCompleted === false || !(user?.schoolName !== null && user?.schoolName !== undefined && user?.schoolName !== '')}
+                disabled={user?.profileCompleted === true}
+                style={{
+                  backgroundColor: user?.profileCompleted === true ? '#f8f9fa' : 'white',
+                  cursor: user?.profileCompleted === true ? 'not-allowed' : 'text'
+                }}
+              />
+              {user?.profileCompleted === true && (
+                <small style={{ color: '#6c757d', fontSize: '12px' }}>School/Coaching name cannot be changed once profile is completed</small>
 </div>
 
 <div className="input-group">
-  <label>{t('classGrade')} {(user?.classGrade === null || user?.classGrade === undefined || user?.classGrade === '') && <span style={{ color: "red" }}>*</span>}</label>
-  <select 
-    name="classGrade" 
-    value={form.classGrade} 
-    onChange={handleChange} 
-    required={!(user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== '')}
-    disabled={user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== ''}
-    style={{
-      backgroundColor: (user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== '') ? '#f8f9fa' : 'white',
-      cursor: (user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== '') ? 'not-allowed' : 'pointer'
-    }}
-  >
-    <option value="">{t('selectClass')}</option>
-    <option value="10th">10th Class</option>
-    <option value="12th">12th Class</option>
-    <option value="Other">{t('other')}</option>
-  </select>
-  {user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== '' && (
-    <small style={{ color: '#6c757d', fontSize: '12px' }}>Class/Grade cannot be changed once set</small>
-  )}
+              <label>{t('classGrade')} {(user?.profileCompleted === false || (user?.classGrade === null || user?.classGrade === undefined || user?.classGrade === '')) && <span style={{ color: "red" }}>*</span>}</label>
+              <select 
+                name="classGrade" 
+                value={form.classGrade} 
+                onChange={handleChange} 
+                required={user?.profileCompleted === false || !(user?.classGrade !== null && user?.classGrade !== undefined && user?.classGrade !== '')}
+                disabled={user?.profileCompleted === true}
+                style={{
+                  backgroundColor: user?.profileCompleted === true ? '#f8f9fa' : 'white',
+                  cursor: user?.profileCompleted === true ? 'not-allowed' : 'pointer'
+                }}
+              >
+                <option value="">{t('selectClass')}</option>
+                <option value="10th">10th Class</option>
+                <option value="12th">12th Class</option>
+                <option value="Other">{t('other')}</option>
+              </select>
+              {user?.profileCompleted === true && (
+                <small style={{ color: '#6c757d', fontSize: '12px' }}>Class/Grade cannot be changed once profile is completed</small>
 </div>
 
 <div className="input-group">
-  <label>{t('gender')} {(user?.gender === null || user?.gender === undefined || user?.gender === '') && <span style={{ color: "red" }}>*</span>}</label>
+  <label>{t('gender')} {(user?.profileCompleted === false || (user?.gender === null || user?.gender === undefined || user?.gender === '')) && <span style={{ color: "red" }}>*</span>}</label>
   <select 
     name="gender" 
     value={form.gender} 
     onChange={handleChange} 
-    required={!(user?.gender !== null && user?.gender !== undefined && user?.gender !== '')}
-    disabled={user?.gender !== null && user?.gender !== undefined && user?.gender !== ''}
+    required={user?.profileCompleted === false || !(user?.gender !== null && user?.gender !== undefined && user?.gender !== '')}
+    disabled={user?.profileCompleted === true}
     style={{
-      backgroundColor: (user?.gender !== null && user?.gender !== undefined && user?.gender !== '') ? '#f8f9fa' : 'white',
-      cursor: (user?.gender !== null && user?.gender !== undefined && user?.gender !== '') ? 'not-allowed' : 'pointer'
+      backgroundColor: user?.profileCompleted === true ? '#f8f9fa' : 'white',
+      cursor: user?.profileCompleted === true ? 'not-allowed' : 'pointer'
     }}
   >
     <option value="Male">Male</option>
     <option value="Female">Female</option>
     <option value="Other">{t('other')}</option>
   </select>
-  {user?.gender !== null && user?.gender !== undefined && user?.gender !== '' && (
-    <small style={{ color: '#6c757d', fontSize: '12px' }}>Gender cannot be changed once set</small>
+  {user?.profileCompleted === true && (
+    <small style={{ color: '#6c757d', fontSize: '12px' }}>Gender cannot be changed once profile is completed</small>
   )}
 </div>
 

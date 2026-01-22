@@ -205,7 +205,9 @@ export default function AuthProvider({ children }) {
     try {
       const res = await API.post("/auth/register", payload);
       if (res?.data?.user) {
-        setUser(res.data.user);
+        // Get full user data after registration
+        const userRes = await API.get("/auth/me");
+        setUser(userRes.data.user);
         const token = res.data.token || res.data.accessToken;
         if (token) localStorage.setItem("token", token);
       }
