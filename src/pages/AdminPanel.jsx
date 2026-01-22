@@ -980,7 +980,7 @@ const doughnutOptions = {
                                       <strong>Referral Count:</strong> {user.referralCount}
                                     </div>
                                     <div className="detail-item">
-                                      <strong>Subscription Tier:</strong> {user.subscriptionTier}
+                                      <strong>Profile Completed:</strong> {user.profileCompleted ? '✅ Yes' : '❌ No'}
                                     </div>
                                     <div className="detail-item">
                                       <strong>Full Name:</strong> {user.fullName || 'N/A'}
