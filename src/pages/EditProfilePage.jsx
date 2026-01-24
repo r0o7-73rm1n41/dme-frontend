@@ -266,10 +266,11 @@ const handleSubmit = async (e) => {
               />
               {user?.profileCompleted === true && (
                 <small style={{ color: '#6c757d', fontSize: '12px' }}>Age cannot be changed once profile is completed</small>
-</div>
+              )}
+            </div>
 
 
-<div className="input-group">
+            <div className="input-group">
               <label>{t('schoolCoaching')} {(user?.profileCompleted === false || (user?.schoolName === null || user?.schoolName === undefined || user?.schoolName === '')) && <span style={{ color: "red" }}>*</span>}</label>
               <input
                 type="text"
@@ -286,9 +287,10 @@ const handleSubmit = async (e) => {
               />
               {user?.profileCompleted === true && (
                 <small style={{ color: '#6c757d', fontSize: '12px' }}>School/Coaching name cannot be changed once profile is completed</small>
-</div>
+              )}
+            </div>
 
-<div className="input-group">
+            <div className="input-group">
               <label>{t('classGrade')} {(user?.profileCompleted === false || (user?.classGrade === null || user?.classGrade === undefined || user?.classGrade === '')) && <span style={{ color: "red" }}>*</span>}</label>
               <select 
                 name="classGrade" 
@@ -308,9 +310,10 @@ const handleSubmit = async (e) => {
               </select>
               {user?.profileCompleted === true && (
                 <small style={{ color: '#6c757d', fontSize: '12px' }}>Class/Grade cannot be changed once profile is completed</small>
-</div>
+              )}
+            </div>
 
-<div className="input-group">
+            <div className="input-group">
   <label>{t('gender')} {(user?.profileCompleted === false || (user?.gender === null || user?.gender === undefined || user?.gender === '')) && <span style={{ color: "red" }}>*</span>}</label>
   <select 
     name="gender" 
