@@ -685,16 +685,6 @@ const translations = {
     deleteAccount: "खाता हटाएं",
     deleteAccountDesc: "अपने खाते और सभी डेटा को स्थायी रूप से हटाएं",
 
-    // Common buttons and actions
-    save: "सेव करें",
-    cancel: "रद्द करें",
-    confirm: "पुष्टि करें",
-    delete: "हटाएं",
-    close: "बंद करें",
-    loading: "लोड हो रहा है...",
-    success: "सफलता",
-    error: "त्रुटि",
-
     // Profile related
     name: "नाम",
     phone: "फोन",
