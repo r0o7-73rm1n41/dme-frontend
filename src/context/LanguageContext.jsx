@@ -105,7 +105,6 @@ const translations = {
 
     // Profile Drawer
     myQuizzesAnalytics: "My Quizzes Analytics",
-    paymentHistory: "Payment History",
     settings: "Settings",
     logout: "Logout",
 
@@ -505,7 +504,6 @@ const translations = {
 
     // Profile Drawer
     myQuizzesAnalytics: "मेरे क्विज़ विश्लेषण",
-    paymentHistory: "भुगतान इतिहास",
     settings: "सेटिंग्स",
     logout: "लॉग आउट",
 
