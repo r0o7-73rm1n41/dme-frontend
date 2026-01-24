@@ -8,6 +8,7 @@ import BottomNavBar from "../components/BottomNavBar";
 import ProfileDrawer from "../components/ProfileDrawer";
 import API from "../utils/api";
 import { showAlert } from "../context/AlertContext";
+import { socket } from "../socket";
 import "../styles/global.css";
 import AnimatedContent from "../components/AnimatedContent";
 import { requestNotificationPermission, showQuizReadyNotification, showQuizStartedNotification } from "../utils/notifications";
@@ -27,21 +28,44 @@ export default function LandingPage() {
   const [eligible, setEligible] = useState(false);
   const totalStudents = 2000;
 
-  // Poll quiz status every 5 seconds
+  // Listen for quiz state changes via socket
   useEffect(() => {
-    const pollStatus = async () => {
+    // Connect socket if not connected
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    // Join today's quiz room
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    socket.emit('join-quiz', today);
+
+    // Listen for quiz state changes
+    const handleQuizStateChanged = (data) => {
+      console.log('LandingPage: Quiz state changed:', data);
+      if (data.quizDate === today) {
+        setQuizState(data.toState);
+      }
+    };
+
+    socket.on('quiz-state-changed', handleQuizStateChanged);
+
+    // Initial status fetch
+    const fetchInitialStatus = async () => {
       try {
         const res = await API.get('/quiz/status');
         setQuizState(res.data.state);
       } catch (error) {
-        console.error('Failed to poll quiz status:', error);
+        console.error('Failed to fetch initial quiz status:', error);
         setQuizState('ERROR');
       }
     };
 
-    pollStatus();
-    const interval = setInterval(pollStatus, 5000);
-    return () => clearInterval(interval);
+    fetchInitialStatus();
+
+    return () => {
+      socket.off('quiz-state-changed', handleQuizStateChanged);
+      socket.emit('leave-quiz', today);
+    };
   }, []);
 
   // Check user eligibility if logged in

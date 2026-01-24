@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import API from "../utils/api";
 import { showAlert } from "../context/AlertContext";
+import { socket } from "../socket";
 import './QuizPage.css';
 
 export default function QuizPage() {
@@ -18,22 +19,111 @@ export default function QuizPage() {
 
   const questionIntervalRef = useRef(null);
   const statusIntervalRef = useRef(null);
+  const statusPollCountRef = useRef(0);
+  const statusBackoffRef = useRef(30000); // Start with 30 second fallback polling
 
-  // Poll quiz status every 5 seconds
+  // Function to poll current question
+  const pollCurrentQuestion = async () => {
+    try {
+      const res = await API.get('/quiz/current-question');
+      const question = res.data;
+      setCurrentQuestion(question);
+      const expiresAt = new Date(question.expiresAt);
+      const remaining = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
+      setTimeLeft(remaining);
+      setDisabled(remaining <= 0);
+      setSelectedAnswer(null); // Reset for new question
+    } catch (error) {
+      if (error.response?.status === 404) {
+        setQuizState('ENDED');
+      } else {
+        console.error('Failed to poll question:', error);
+        showAlert('Failed to load question: ' + (error?.response?.data?.message || error.message), 'danger');
+      }
+    }
+  };
+
+  // Connect socket and listen for quiz events
+  useEffect(() => {
+    if (!user) return;
+
+    // Connect socket if not connected
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    // Join today's quiz room
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    socket.emit('join-quiz', today);
+
+    // Listen for quiz state changes
+    const handleQuizStateChanged = (data) => {
+      console.log('Quiz state changed:', data);
+      if (data.quizDate === today) {
+        setQuizState(data.toState);
+        // Reset backoff on successful state change
+        statusBackoffRef.current = 30000;
+        statusPollCountRef.current = 0;
+      }
+    };
+
+    // Listen for question advancement
+    const handleQuestionAdvanced = (data) => {
+      console.log('Question advanced:', data);
+      if (data.quizDate === today) {
+        // Force refresh current question when question advances
+        pollCurrentQuestion();
+      }
+    };
+
+    socket.on('quiz-state-changed', handleQuizStateChanged);
+    socket.on('question-advanced', handleQuestionAdvanced);
+
+    // Initial status fetch
+    const fetchInitialStatus = async () => {
+      try {
+        const res = await API.get('/quiz/status');
+        setQuizState(res.data.state);
+      } catch (error) {
+        console.error('Failed to fetch initial status:', error);
+        setQuizState('NO_QUIZ');
+      }
+    };
+
+    fetchInitialStatus();
+
+    return () => {
+      socket.off('quiz-state-changed', handleQuizStateChanged);
+      socket.off('question-advanced', handleQuestionAdvanced);
+      socket.emit('leave-quiz', today);
+    };
+  }, [user]); // Only depend on user
+
+  // Fallback polling with exponential backoff (30s to 5min max)
   useEffect(() => {
     const pollStatus = async () => {
       try {
         const res = await API.get('/quiz/status');
         setQuizState(res.data.state);
+        // Reset backoff on success
+        statusBackoffRef.current = 30000;
+        statusPollCountRef.current = 0;
       } catch (error) {
         console.error('Failed to poll status:', error);
+        statusPollCountRef.current += 1;
+        // Exponential backoff: 30s, 1min, 2min, 5min max
+        statusBackoffRef.current = Math.min(30000 * Math.pow(2, statusPollCountRef.current), 300000);
       }
     };
 
-    pollStatus();
-    statusIntervalRef.current = setInterval(pollStatus, 5000);
+    // Start polling after 30 seconds, then use backoff interval
+    const timeoutId = setTimeout(() => {
+      pollStatus();
+      statusIntervalRef.current = setInterval(pollStatus, statusBackoffRef.current);
+    }, 30000);
 
     return () => {
+      clearTimeout(timeoutId);
       if (statusIntervalRef.current) clearInterval(statusIntervalRef.current);
     };
   }, []);
@@ -53,28 +143,11 @@ export default function QuizPage() {
 
       joinQuiz();
 
-      const pollQuestion = async () => {
-        try {
-          const res = await API.get('/quiz/current-question');
-          const question = res.data;
-          setCurrentQuestion(question);
-          const expiresAt = new Date(question.expiresAt);
-          const remaining = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
-          setTimeLeft(remaining);
-          setDisabled(remaining <= 0);
-          setSelectedAnswer(null); // Reset for new question
-        } catch (error) {
-          if (error.response?.status === 404) {
-            setQuizState('ENDED');
-          } else {
-            console.error('Failed to poll question:', error);
-            showAlert('Failed to load question: ' + (error?.response?.data?.message || error.message), 'danger');
-          }
-        }
-      };
-
-      pollQuestion();
-      questionIntervalRef.current = setInterval(pollQuestion, 1000);
+      // Initial poll
+      pollCurrentQuestion();
+      
+      // Poll every 1 second
+      questionIntervalRef.current = setInterval(pollCurrentQuestion, 1000);
 
       return () => {
         if (questionIntervalRef.current) clearInterval(questionIntervalRef.current);

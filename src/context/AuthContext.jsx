@@ -3,6 +3,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import API from "../utils/api";
 import { showAlert } from "./AlertContext";
+import { socket } from "../socket";
 
 console.log("✅ API_URL being used:", API.defaults.baseURL);
 
@@ -22,16 +23,28 @@ export default function AuthProvider({ children }) {
           const res = await API.get("/auth/me");
           // Backend returns { user: {...} }
           setUser(res.data.user || res.data);
+          // Connect socket when user is authenticated
+          if (!socket.connected) {
+            socket.connect();
+          }
         } catch (err) {
           showAlert("Authentication check failed. Please login again.", "danger");
           localStorage.removeItem("token");
           setUser(null);
+          // Disconnect socket on auth failure
+          if (socket.connected) {
+            socket.disconnect();
+          }
         } finally {
           setLoading(false);
         }
       })();
     } else {
       setLoading(false);
+      // Disconnect socket if no token
+      if (socket.connected) {
+        socket.disconnect();
+      }
     }
   }, []);
 
@@ -260,6 +273,10 @@ export default function AuthProvider({ children }) {
         setUser(res.data.user);
       }
       showAlert("Login successful!", "success", 3000);
+      // Connect socket after successful login
+      if (!socket.connected) {
+        socket.connect();
+      }
       return res;
     } catch (error) {
       throw error;
@@ -275,6 +292,10 @@ export default function AuthProvider({ children }) {
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       setUser(null);
+      // Disconnect socket on logout
+      if (socket.connected) {
+        socket.disconnect();
+      }
     }
   };
 
