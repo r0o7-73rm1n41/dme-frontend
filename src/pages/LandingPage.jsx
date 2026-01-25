@@ -433,7 +433,7 @@ export default function LandingPage() {
             📲 <strong>{t('contactInfo')}</strong>
           </p>
           <p>
-            📧 <strong>{t('email')}:</strong> dailymind.edu@gmail.com
+            📧 <strong>{t('contactEmail')}</strong>
           </p>
           <div className="t-and-c">
             <h6>{t('ageVerification')}</h6>
