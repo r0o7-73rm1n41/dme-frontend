@@ -577,12 +577,26 @@ const AdminPanel = () => {
       
       // Step 2: Create quiz with question IDs
       console.log('Creating quiz with question IDs...');
-      await AdminAPI.post('/admin/quiz', {
-        questions: questionIds,
-        classGrade: 'ALL' // Default for now
-      });
-      
-      alert('✅ Quiz created successfully from CSV! Questions saved and quiz set to SCHEDULED state.');
+      try {
+        await AdminAPI.post('/admin/quiz', {
+          questions: questionIds,
+          classGrade: 'ALL' // Default for now
+        });
+        alert('✅ Quiz created successfully from CSV! Questions saved and quiz set to SCHEDULED state.');
+      } catch (quizError) {
+        console.error('Quiz creation error:', quizError);
+        // Check if quiz was actually created despite the error
+        try {
+          const statusRes = await AdminAPI.get('/admin/quiz/status');
+          if (statusRes.data && statusRes.data.quizDate) {
+            alert('✅ Quiz was created successfully despite the error! Please refresh the page.');
+          } else {
+            throw quizError;
+          }
+        } catch (statusError) {
+          throw quizError; // Re-throw the original error
+        }
+      }
       loadDashboardData();
       
     } catch (err) {
