@@ -374,7 +374,10 @@ const AdminPanel = () => {
   const openQuizForm = (quiz = null) => {
     if (quiz) {
       // Editing existing quiz
-      setEditingQuiz(quiz);
+      setEditingQuiz({
+        ...quiz,
+        quizDate: quiz.quizDate || new Date().toISOString().split('T')[0]
+      });
       setQuizFormData({
         title: quiz.title || 'Daily Quiz',
         description: quiz.description || 'Daily 50 Question Quiz',
