@@ -2,7 +2,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useState, useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
-import { LanguageProvider } from "./context/LanguageContext";
 
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
@@ -113,10 +112,8 @@ function AppContent() {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </LanguageProvider>
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   );
 }
