@@ -938,7 +938,7 @@ const doughnutOptions = {
                         <th>
   <span className="live-badge">
     <span className="live-dot"></span>
-  Actions
+  🛑Actions
   </span>
 </th>
 
