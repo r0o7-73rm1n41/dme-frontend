@@ -132,12 +132,6 @@ const translations = {
     paymentRequired: "Payment required",
     insufficientPermissions: "Insufficient permissions",
 
-    // Success messages
-    quizCompleted: "Quiz completed successfully!",
-    blogCreated: "Blog created successfully",
-    blogUpdated: "Blog updated successfully",
-    blogDeleted: "Blog deleted successfully",
-
     // Profile related
     name: "Name",
     phone: "Phone",
@@ -322,9 +316,6 @@ const translations = {
     dangerZone: "खतरे का क्षेत्र",
     deleteAccount: "खाता हटाएं",
     deleteAccountDesc: "अपने खाते और सभी डेटा को स्थायी रूप से हटाएं",
-
-    // Common buttons and actions
-    save: "सेव करें",
     cancel: "रद्द करें",
     confirm: "पुष्टि करें",
     delete: "हटाएं",
