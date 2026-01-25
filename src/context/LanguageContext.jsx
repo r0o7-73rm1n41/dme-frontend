@@ -92,7 +92,6 @@ const translations = {
     top20Winners: "Top 20 Winners",
     rank: "Rank",
     score: "Score",
-    accuracy: "Accuracy",
     time: "Time",
 
     // Auth related
@@ -112,7 +111,6 @@ const translations = {
 
     // Blog related
     blogs: "Blogs",
-    createBlog: "Create Blog",
     editBlog: "Edit Blog",
     deleteBlog: "Delete Blog",
     like: "Like",
@@ -125,7 +123,6 @@ const translations = {
     manageQuizzes: "Manage Quizzes",
     manageBlogs: "Manage Blogs",
     viewPayments: "View Payments",
-    viewWinners: "View Winners",
 
     // Error messages
     networkError: "Network error. Please try again.",
@@ -443,6 +440,8 @@ const translations = {
     blogDeleted: "ब्लॉग सफलतापूर्वक हटाया गया"
   }
 };
+
+const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(localStorage.getItem('lang') || 'en');
