@@ -86,7 +86,6 @@ export default function EditBlogPage() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("content", content);
-      formData.append("isPublished", true);
       if (pdfFile) {
         // formData.append("pdfFile", pdfFile);
         formData.append("pdf", pdfFile);
