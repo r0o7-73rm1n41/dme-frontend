@@ -151,8 +151,8 @@ export default function QuizPage() {
       // Initial poll
       pollCurrentQuestion();
       
-      // Poll every 1 second
-      questionIntervalRef.current = setInterval(pollCurrentQuestion, 1000);
+      // Fallback poll every 30 seconds (reduced from 1 second to prevent rate limiting)
+      questionIntervalRef.current = setInterval(pollCurrentQuestion, 30000);
 
       return () => {
         if (questionIntervalRef.current) clearInterval(questionIntervalRef.current);
