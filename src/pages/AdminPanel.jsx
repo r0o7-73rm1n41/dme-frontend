@@ -166,12 +166,12 @@ const AdminPanel = () => {
       const usersRes = await AdminAPI.get('/admin/users');
       setUsers(usersRes.data.users || []);
       
-      // Load today's quiz status
+      // Load quizzes
       try {
-        const quizStatusRes = await AdminAPI.get('/admin/quiz/status');
-        setQuizzes([quizStatusRes.data]); // Show today's quiz
+        const quizzesRes = await AdminAPI.get('/admin/quiz');
+        setQuizzes(quizzesRes.data.quizzes || []);
       } catch (error) {
-        console.error('Failed to load quiz status:', error);
+        console.error('Failed to load quizzes:', error);
         setQuizzes([]);
       }
       
@@ -375,25 +375,24 @@ const AdminPanel = () => {
     if (quiz) {
       // Editing existing quiz
       setEditingQuiz(quiz);
-      // For editing, we need to ensure questions have the correct structure
-      // Since questions are now ObjectIds, we can't edit them directly
-      // For now, just show a message that editing is not supported
-      alert('Editing existing quizzes is not currently supported. Please create a new quiz.');
-      return;
+      setQuizFormData({
+        title: quiz.title || 'Daily Quiz',
+        description: quiz.description || 'Daily 50 Question Quiz',
+        classGrade: quiz.classGrade || 'ALL',
+        quizDate: quiz.quizDate || new Date().toISOString().split('T')[0]
+      });
     } else {
-      // New quiz - ensure quizFormData has correct structure
-      setQuizFormData(prev => {
-        if (!prev.questions || prev.questions.length !== 50) {
-          return {
-            classGrade: 'ALL',
-            questions: Array(50).fill().map(() => ({
-              question: '',
-              options: ['', '', '', ''],
-              correctIndex: 0
-            }))
-          };
-        }
-        return prev;
+      // New quiz
+      setQuizFormData({
+        title: 'Daily Quiz',
+        description: 'Daily 50 Question Quiz',
+        classGrade: 'ALL',
+        quizDate: new Date().toISOString().split('T')[0],
+        questions: Array(50).fill().map(() => ({
+          question: '',
+          options: ['', '', '', ''],
+          correctIndex: 0
+        }))
       });
       setEditingQuiz(null);
     }
@@ -418,59 +417,79 @@ const AdminPanel = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     
-    // Get questions from form (for 50 questions)
-    const questions = [];
-    for (let i = 0; i < 50; i++) {
-      const question = formData.get(`question_${i}`);
-      const optionA = formData.get(`optionA_${i}`);
-      const optionB = formData.get(`optionB_${i}`);
-      const optionC = formData.get(`optionC_${i}`);
-      const optionD = formData.get(`optionD_${i}`);
-      const correctIndex = parseInt(formData.get(`correct_${i}`));
-      
-      if (question && optionA && optionB && optionC && optionD && !isNaN(correctIndex)) {
-        questions.push({
-          question: question.trim(),
-          options: [optionA.trim(), optionB.trim(), optionC.trim(), optionD.trim()],
-          correctIndex: correctIndex
-        });
-      }
-    }
-    
-    if (questions.length !== 50) {
-      alert(`Please provide exactly 50 questions. Currently: ${questions.length}`);
-      return;
-    }
-
     try {
+      const title = formData.get('title')?.trim() || 'Daily Quiz';
+      const description = formData.get('description')?.trim() || 'Daily 50 Question Quiz';
       const classGrade = formData.get('classGrade') || 'ALL';
+      const quizDate = formData.get('quizDate') || new Date().toISOString().split('T')[0];
       
-      // Use /admin/quiz endpoint (singular, not plural)
-      await AdminAPI.post('/admin/quiz', {
-        questions: questions,
-        classGrade: classGrade
-      });
+      if (editingQuiz) {
+        // Editing existing quiz
+        await AdminAPI.put(`/admin/quiz/${editingQuiz.quizDate}`, {
+          title,
+          description,
+          classGrade
+        });
+        alert('✅ Quiz updated successfully!');
+      } else {
+        // Creating new quiz
+        // Get questions from form (for 50 questions)
+        const questions = [];
+        for (let i = 0; i < 50; i++) {
+          const question = formData.get(`question_${i}`);
+          const optionA = formData.get(`optionA_${i}`);
+          const optionB = formData.get(`optionB_${i}`);
+          const optionC = formData.get(`optionC_${i}`);
+          const optionD = formData.get(`optionD_${i}`);
+          const correctIndex = parseInt(formData.get(`correct_${i}`));
+          
+          if (question && optionA && optionB && optionC && optionD && !isNaN(correctIndex)) {
+            questions.push({
+              question: question.trim(),
+              options: [optionA.trim(), optionB.trim(), optionC.trim(), optionD.trim()],
+              correctIndex: correctIndex
+            });
+          }
+        }
+        
+        if (questions.length !== 50) {
+          alert(`Please provide exactly 50 questions. Currently: ${questions.length}`);
+          return;
+        }
+
+        await AdminAPI.post('/admin/quiz', {
+          quizDate,
+          title,
+          description,
+          questions: questions,
+          classGrade: classGrade
+        });
+        
+        alert('✅ Quiz created successfully! Quiz will auto-start at 8:00 PM IST');
+      }
       
-      alert('✅ Quiz created successfully! Quiz will auto-start at 8:00 PM IST');
       closeQuizForm();
       loadDashboardData();
     } catch (error) {
       console.error('Failed to save quiz:', error);
-      const errorMsg = error?.response?.data?.message || error?.message || 'Failed to create quiz';
+      const errorMsg = error?.response?.data?.message || error?.message || 'Failed to save quiz';
       alert(`❌ ${errorMsg}`);
     }
   };
 
-  const deleteQuiz = async () => {
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-    if (window.confirm(`Are you sure you want to delete today's quiz (${today})? This cannot be undone.`)) {
+  const deleteQuiz = async (quiz) => {
+    if (!quiz) return;
+    
+    const quizDate = quiz.date || quiz.quizDate;
+    if (window.confirm(`Are you sure you want to delete the quiz for ${new Date(quizDate).toLocaleDateString()}? This cannot be undone.`)) {
       try {
-        // Quiz deletion not directly available - admin can only create new quiz which replaces old one
-        alert('⚠️ Quiz deletion is restricted. You can create a new quiz before 7:50 PM which will replace the existing one.');
+        await AdminAPI.delete(`/admin/quiz/${quizDate}`);
+        alert('✅ Quiz deleted successfully!');
         loadDashboardData();
       } catch (error) {
         console.error('Failed to delete quiz:', error);
-        alert('Failed to delete quiz: ' + (error?.response?.data?.message || error?.message));
+        const errorMsg = error?.response?.data?.message || error?.message || 'Failed to delete quiz';
+        alert(`❌ ${errorMsg}`);
       }
     }
   };
@@ -481,10 +500,12 @@ const AdminPanel = () => {
   };
 
   // Start quiz now (manual)
-  const startQuizNow = async () => {
+  const startQuizNow = async (quiz) => {
+    if (!quiz) return;
+    
     try {
-      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-      await AdminAPI.put(`/admin/quiz/${today}/start`);
+      const quizDate = quiz.date || quiz.quizDate;
+      await AdminAPI.put(`/admin/quiz/${quizDate}/start`);
       loadDashboardData();
       alert('✅ Quiz started successfully!');
     } catch (error) {
@@ -1063,26 +1084,26 @@ const doughnutOptions = {
                     <tbody>
                       {quizzes.map((quiz, index) => (
                         <tr key={quiz.quizDate || quiz._id || index}>
-                          <td>{quiz._id?.slice(-6) || quiz.quizDate?.slice(-6) || 'N/A'}</td>
-                          <td>{'Daily Quiz'}</td>
-                          <td>{'Daily 50 Question Quiz'}</td>
-                          <td>{quiz.questions?.length || 50}</td>
-                          <td>{quiz.quizDate ? new Date(quiz.quizDate).toLocaleDateString() : new Date().toLocaleDateString()}</td>
-                          <td>{quiz.state === 'LIVE' ? 'Live' : quiz.state === 'ENDED' ? 'Completed' : quiz.state === 'LOCKED' ? 'Locked' : quiz.state || 'Scheduled'}</td>
+                          <td>{quiz.id || quiz._id?.slice(-6) || quiz.quizDate?.slice(-6) || 'N/A'}</td>
+                          <td>{quiz.title || 'Daily Quiz'}</td>
+                          <td>{quiz.description || 'Daily 50 Question Quiz'}</td>
+                          <td>{quiz.questions || 50}</td>
+                          <td>{quiz.date ? new Date(quiz.date).toLocaleDateString() : new Date().toLocaleDateString()}</td>
+                          <td>{quiz.status === 'LIVE' ? 'Live' : quiz.status === 'ENDED' ? 'Completed' : quiz.status === 'LOCKED' ? 'Locked' : quiz.status || 'Scheduled'}</td>
                           <td>
-                            <button className="action-btn edit" onClick={() => openQuizForm(quiz)} disabled>Edit</button>
+                            <button className="action-btn edit" onClick={() => openQuizForm(quiz)}>Edit</button>
                             <button 
                               className="action-btn" 
-                              onClick={() => startQuizNow()}
-                              disabled={quiz.state === 'LIVE'}
+                              onClick={() => startQuizNow(quiz)}
+                              disabled={quiz.status === 'LIVE'}
                               style={{ 
-                                opacity: quiz.state === 'LIVE' ? 0.5 : 1,
-                                cursor: quiz.state === 'LIVE' ? 'not-allowed' : 'pointer'
+                                opacity: quiz.status === 'LIVE' ? 0.5 : 1,
+                                cursor: quiz.status === 'LIVE' ? 'not-allowed' : 'pointer'
                               }}
                             >
-                              {quiz.state === 'LIVE' ? 'Live' : 'Start Now'}
+                              {quiz.status === 'LIVE' ? 'Live' : 'Start Now'}
                             </button>
-                            <button className="action-btn delete" onClick={() => deleteQuiz()}>Delete</button>
+                            <button className="action-btn delete" onClick={() => deleteQuiz(quiz)}>Delete</button>
                           </td>
                         </tr>
                       ))}
@@ -1437,6 +1458,44 @@ const doughnutOptions = {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                   <div>
                     <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>
+                      Quiz Title <span style={{ color: 'red' }}>*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="title"
+                      required
+                      defaultValue={quizFormData.title}
+                      style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                      placeholder="Enter quiz title"
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>
+                      Quiz Date <span style={{ color: 'red' }}>*</span>
+                    </label>
+                    <input
+                      type="date"
+                      name="quizDate"
+                      required
+                      defaultValue={quizFormData.quizDate}
+                      style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                    />
+                  </div>
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>
+                      Description <span style={{ color: 'red' }}>*</span>
+                    </label>
+                    <textarea
+                      name="description"
+                      rows="2"
+                      required
+                      defaultValue={quizFormData.description}
+                      style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                      placeholder="Enter quiz description"
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>
                       Class/Grade <span style={{ color: 'red' }}>*</span>
                     </label>
                     <select
@@ -1456,7 +1515,13 @@ const doughnutOptions = {
                   </div>
                 </div>
               </div>
-              {Array.from({ length: quizFormData.questions?.length || 50 }, (_, i) => (
+              
+              {!editingQuiz && (
+                <>
+                  {/* Questions Section - Only for new quizzes */}
+                  <div style={{ marginTop: '20px' }}>
+                    <h4 style={{ color: '#660000', marginBottom: '15px' }}>Questions (50 Required)</h4>
+                    {Array.from({ length: quizFormData.questions?.length || 50 }, (_, i) => (
                 <div key={i} style={{ 
                   marginBottom: '20px', 
                   padding: '15px', 
@@ -1537,9 +1602,12 @@ const doughnutOptions = {
                   </select>
                 </div>
               ))}
+                </>
+              )}
+              
               <div className="modal-footer" style={{ position: 'sticky', bottom: 0, backgroundColor: 'white', padding: '15px', borderTop: '1px solid #ddd', marginTop: '20px' }}>
                 <button type="button" className="btn-cancel" onClick={closeQuizForm}>Cancel</button>
-                <button type="submit" className="btn-save">Create Quiz (50 Questions)</button>
+                <button type="submit" className="btn-save">{editingQuiz ? 'Update Quiz' : 'Create Quiz (50 Questions)'}</button>
               </div>
             </form>
           </div>
