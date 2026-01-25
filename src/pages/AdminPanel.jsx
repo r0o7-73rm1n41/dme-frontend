@@ -579,7 +579,6 @@ const AdminPanel = () => {
       console.log('Creating quiz with question IDs...');
       await AdminAPI.post('/admin/quiz', {
         questions: questionIds,
-        state: 'DRAFT',
         classGrade: 'ALL' // Default for now
       });
       
