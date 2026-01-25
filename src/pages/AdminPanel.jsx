@@ -1517,8 +1517,6 @@ const doughnutOptions = {
               </div>
               
               {!editingQuiz && (
-                <>
-                  {/* Questions Section - Only for new quizzes */}
                   <div style={{ marginTop: '20px' }}>
                     <h4 style={{ color: '#660000', marginBottom: '15px' }}>Questions (50 Required)</h4>
                     {Array.from({ length: quizFormData.questions?.length || 50 }, (_, i) => (
@@ -1602,7 +1600,7 @@ const doughnutOptions = {
                   </select>
                 </div>
               ))}
-                </>
+              </div>
               )}
               
               <div className="modal-footer" style={{ position: 'sticky', bottom: 0, backgroundColor: 'white', padding: '15px', borderTop: '1px solid #ddd', marginTop: '20px' }}>
