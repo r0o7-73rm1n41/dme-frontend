@@ -14,6 +14,7 @@ export default function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [timeLeft, setTimeLeft] = useState(15);
   const [quizState, setQuizState] = useState("loading");
+  const [quizError, setQuizError] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [disabled, setDisabled] = useState(false);
 
@@ -84,9 +85,11 @@ export default function QuizPage() {
       try {
         const res = await API.get('/quiz/status');
         setQuizState(res.data.state);
+        setQuizError(null);
       } catch (error) {
         console.error('Failed to fetch initial status:', error);
-        setQuizState('NO_QUIZ');
+        setQuizState('ERROR');
+        setQuizError(error?.response?.data?.message || error.message);
       }
     };
 
@@ -105,11 +108,13 @@ export default function QuizPage() {
       try {
         const res = await API.get('/quiz/status');
         setQuizState(res.data.state);
+        setQuizError(null);
         // Reset backoff on success
         statusBackoffRef.current = 30000;
         statusPollCountRef.current = 0;
       } catch (error) {
         console.error('Failed to poll status:', error);
+        setQuizError(error?.response?.data?.message || error.message);
         statusPollCountRef.current += 1;
         // Exponential backoff: 30s, 1min, 2min, 5min max
         statusBackoffRef.current = Math.min(30000 * Math.pow(2, statusPollCountRef.current), 300000);
@@ -345,6 +350,30 @@ export default function QuizPage() {
     );
   }
 
+  if (quizState === 'ERROR') {
+    return (
+      <div className="quiz-container">
+        <div className="quiz-wrapper">
+          <div className="quiz-status-message">
+            <div className="quiz-status-icon">⚠️</div>
+            <div className="quiz-status-title">Error Loading Quiz</div>
+            <div className="quiz-status-description">
+              {quizError || 'Something went wrong. Please try again.'}
+            </div>
+            <div className="quiz-action-buttons">
+              <button className="quiz-btn-primary" onClick={() => window.location.reload()}>
+                Refresh Page
+              </button>
+              <button className="quiz-btn-secondary" onClick={() => navigate('/')}>
+                Go Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="quiz-container">
       <div className="quiz-wrapper">
@@ -352,7 +381,7 @@ export default function QuizPage() {
           <div className="quiz-status-icon">❓</div>
           <div className="quiz-status-title">Unknown Quiz State</div>
           <div className="quiz-status-description">
-            Something went wrong. Please refresh the page or contact support.
+            Current state: {quizState}. {quizError ? 'Error: ' + quizError : 'Something went wrong. Please refresh the page or contact support.'}
           </div>
           <div className="quiz-action-buttons">
             <button className="quiz-btn-primary" onClick={() => window.location.reload()}>
