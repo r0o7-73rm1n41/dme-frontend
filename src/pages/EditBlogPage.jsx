@@ -104,7 +104,16 @@ export default function EditBlogPage() {
       setPdfFile(null); // Reset the file input
       loadMyBlogs();
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Failed to create note";
+      const errorData = err.response?.data;
+      let errorMsg = "Failed to create note";
+      
+      if (errorData?.message) {
+        errorMsg = errorData.message;
+        if (errorData.errors && Array.isArray(errorData.errors)) {
+          errorMsg += "\n\n" + errorData.errors.join("\n");
+        }
+      }
+      
       alert(errorMsg);
       console.error("Create blog error:", err);
     }
