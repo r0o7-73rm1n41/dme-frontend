@@ -435,7 +435,7 @@ body.dark .bottom-nav {
   box-shadow: 0 4px 20px #0000004d;
 }
 
-.countdown-number {
+.countdown- {
   font-size: 1.8rem;
   font-weight: 700;
   color: #000000;
@@ -467,7 +467,7 @@ body.dark .bottom-nav {
 
 .countdown-item {
   text-align: center;
-  color: var(--white);
+  color: var(--red);
   animation: fadeIn 0.5s ease-in;
 }
 .countdown-item .icon {
