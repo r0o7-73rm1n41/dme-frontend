@@ -398,7 +398,7 @@ body.dark .bottom-nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 15px;
   background-color: transparent;
   border-radius: 10px;
@@ -407,7 +407,7 @@ body.dark .bottom-nav {
   margin: 15px auto;
   box-shadow: none;
   flex-wrap: wrap;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Countdown Timer Section */
@@ -426,17 +426,17 @@ body.dark .bottom-nav {
 }
 
 .countdown-block {
-  background: linear-gradient(135deg, #ffffff, #ffffff);
-  border-radius: 6px;
-  padding: 8px 6px;
-  min-width: 50px;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 12px 10px;
+  min-width: 60px;
   text-align: center;
   backdrop-filter: none;
-  box-shadow: 0 8px 24px #764ba24d;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .countdown-number {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: #333333;
   line-height: 1;
@@ -496,13 +496,8 @@ body.dark .bottom-nav {
 }
 
 /* Dark mode support for countdown */
-body.dark .countdown-wrapper {
-  background-color: rgba(230, 126, 126, 0.2);
-  border: 1px solid rgba(230, 126, 126, 0.3);
-}
-
 body.dark .countdown-block {
-  background: rgba(255, 255, 255, 0.08);
+  background: #ffffff;
 }
 
 /* Post / Note preview responsive styles */
