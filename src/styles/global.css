@@ -406,6 +406,8 @@ body.dark .bottom-nav {
   margin: 25px auto;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   flex-wrap: wrap;
+  max-width: 90vw;
+  overflow: hidden;
 }
 
 /* Countdown Timer Section */
