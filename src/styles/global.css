@@ -664,6 +664,213 @@ body.dark .sidebar-item:hover {
 
 
 
+
+/* Quiz Countdown Banner */
+.quiz-countdown-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px 15px;
+  margin: 0;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.countdown-content {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.countdown-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.countdown-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.detail-item {
+  flex: 1;
+  min-width: 250px;
+}
+
+.detail-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  opacity: 0.9;
+}
+
+.countdown-display {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Courier New', monospace;
+}
+
+.countdown-block {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px 10px;
+  min-width: 60px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.countdown-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 6px;
+}
+
+.countdown-separator {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 2px;
+}
+
+.quiz-info {
+  flex: 1;
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 12px 15px;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.info-value {
+  font-weight: 500;
+  text-align: right;
+}
+
+.status-scheduled {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+/* Dark mode support */
+body.dark .quiz-countdown-banner {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .countdown-details {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .detail-item,
+  .quiz-info {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .countdown-display {
+    justify-content: center;
+  }
+
+  .countdown-block {
+    padding: 10px 8px;
+    min-width: 50px;
+  }
+
+  .countdown-number {
+    font-size: 1.5rem;
+  }
+
+  .quiz-info {
+    text-align: center;
+  }
+
+  .info-row {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .info-value {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-countdown-banner {
+    padding: 15px 10px;
+  }
+
+  .countdown-title {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .countdown-block {
+    padding: 8px 6px;
+    min-width: 45px;
+  }
+
+  .countdown-number {
+    font-size: 1.3rem;
+  }
+
+  .countdown-display {
+    gap: 4px;
+  }
+
+  .countdown-separator {
+    font-size: 1.2rem;
+    margin: 0 1px;
+  }
+
+  .detail-label,
+  .info-label {
+    font-size: 0.8rem;
+  }
+
+  .info-value {
+    font-size: 0.85rem;
+  }
+}
+
 /* Container for the homepage content */
 .home-container {
   max-width: 95%;

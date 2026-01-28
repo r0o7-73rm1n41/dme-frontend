@@ -130,6 +130,9 @@ export default function HomePage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 });
+
+  const countdownIntervalRef = useRef(null);
 
   /**
    * Load blogs from backend and display ALL posts sorted by engagement
@@ -345,6 +348,42 @@ export default function HomePage() {
     };
   }, [loadBlogs]);
 
+  // Countdown timer for upcoming quiz (8 PM IST)
+  useEffect(() => {
+    const calculateCountdown = () => {
+      const now = new Date();
+      const today = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      
+      // Calculate 8:00 PM IST
+      const quizTime = new Date(today + 'T20:00:00');
+      const diffMs = quizTime - now;
+
+      if (diffMs <= 0) {
+        setCountdown({ hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      const totalSeconds = Math.floor(diffMs / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      setCountdown({ hours, minutes, seconds });
+    };
+
+    // Calculate immediately
+    calculateCountdown();
+
+    // Update every second
+    countdownIntervalRef.current = setInterval(calculateCountdown, 1000);
+
+    return () => {
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+      }
+    };
+  }, []);
+
   /**
    * Toggle like on a blog post and update UI immediately
    */
@@ -394,6 +433,44 @@ export default function HomePage() {
         <DarkModeToggle />
         <h2>{t('notes').toUpperCase()}</h2>
       </header>
+
+      {/* Upcoming Quiz Countdown Section */}
+      <div className="quiz-countdown-banner">
+        <div className="countdown-content">
+          <h3 className="countdown-title">📅 Upcoming Quiz</h3>
+          <div className="countdown-details">
+            <div className="detail-item">
+              <span className="detail-label">Quiz Starts In</span>
+              <div className="countdown-display">
+                <div className="countdown-block">
+                  <div className="countdown-number">{String(countdown.hours).padStart(2, '0')}</div>
+                  <div className="countdown-label">Hours</div>
+                </div>
+                <div className="countdown-separator">:</div>
+                <div className="countdown-block">
+                  <div className="countdown-number">{String(countdown.minutes).padStart(2, '0')}</div>
+                  <div className="countdown-label">Minutes</div>
+                </div>
+                <div className="countdown-separator">:</div>
+                <div className="countdown-block">
+                  <div className="countdown-number">{String(countdown.seconds).padStart(2, '0')}</div>
+                  <div className="countdown-label">Seconds</div>
+                </div>
+              </div>
+            </div>
+            <div className="quiz-info">
+              <div className="info-row">
+                <span className="info-label">Time:</span>
+                <span className="info-value">08:00 PM to 08:30 PM</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Status:</span>
+                <span className="info-value status-scheduled">Scheduled</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="home-container">
         <h2>{t('latestNotes')}</h2>
