@@ -199,11 +199,21 @@ export default function QuizPage() {
   }
 
   if (quizState === 'NO_QUIZ') {
+    const today = new Date();
+    const dayName = today.toLocaleDateString('en-US', { weekday: 'short' });
+    const dayNumber = today.getDate();
+    const monthName = today.toLocaleDateString('en-US', { month: 'short' });
+    const year = today.getFullYear();
+
     return (
       <div className="quiz-container">
         <div className="quiz-wrapper">
           <div className="quiz-status-message">
-            <div className="quiz-status-icon">📅</div>
+            <div className="quiz-status-icon calendar-display">
+              <div className="calendar-header">{monthName}</div>
+              <div className="calendar-day">{dayNumber}</div>
+              <div className="calendar-footer">{dayName} • {year}</div>
+            </div>
             <div className="quiz-status-title">No Quiz Today</div>
             <div className="quiz-status-description">
               There is no quiz scheduled for today. Check back tomorrow at 8:00 PM IST.
