@@ -19,7 +19,7 @@ export default function RegisterPage() {
     age: "",
     gender: "",
     schoolName: "",
-    classGrade: ""
+    class: ""
   });
   const [otpMethod, setOtpMethod] = useState("sms"); // 'sms' or 'email'
   const [smsSessionId, setSmsSessionId] = useState("");
@@ -67,7 +67,7 @@ export default function RegisterPage() {
 
     try {
       // Basic validation
-      if (!form.name || !form.password || !form.age || !form.gender || !form.schoolName || !form.classGrade) {
+      if (!form.name || !form.password || !form.age || !form.gender || !form.schoolName || !form.class) {
         setError("Please fill in all required fields");
         return;
       }
@@ -212,7 +212,7 @@ export default function RegisterPage() {
         age: form.age,
         gender: form.gender,
         schoolName: form.schoolName,
-        classGrade: form.classGrade
+        class: form.class
       };
       if (form.email && form.email.trim() !== "") {
         payload.email = form.email;
@@ -255,7 +255,7 @@ export default function RegisterPage() {
         age: form.age,
         gender: form.gender,
         schoolName: form.schoolName,
-        classGrade: form.classGrade,
+        class: form.class,
         ...(form.phone && { phone: form.phone }) // include phone only if provided
       });
       const token = res?.data?.accessToken;
@@ -393,13 +393,13 @@ export default function RegisterPage() {
                 <div className="input-group">
                   <label>Class/Grade *</label>
                   <select
-                    value={form.classGrade}
-                    onChange={(e) => setForm({ ...form, classGrade: e.target.value })}
+                    value={form.class}
+                    onChange={(e) => setForm({ ...form, class: e.target.value })}
                     required
                   >
                     <option value="">Select Class</option>
-                    <option value="10th">10th Class</option>
-                    <option value="12th">12th Class</option>
+                    <option value="10">10th Class</option>
+                    <option value="12">12th Class</option>
                     <option value="Other">Other</option>
                   </select>
                 </div>
