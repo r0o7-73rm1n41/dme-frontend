@@ -22,7 +22,13 @@ export default function AuthProvider({ children }) {
         try {
           const res = await API.get("/auth/me");
           // Backend returns { user: {...} }
-          setUser(res.data.user || res.data);
+          const userData = res.data.user || res.data;
+          // Ensure role is set
+          const userWithRole = {
+            ...userData,
+            role: userData.role || 'USER'
+          };
+          setUser(userWithRole);
           // Connect socket when user is authenticated
           if (!socket.connected) {
             socket.connect();
@@ -30,6 +36,7 @@ export default function AuthProvider({ children }) {
         } catch (err) {
           showAlert("Authentication check failed. Please login again.", "danger");
           localStorage.removeItem("token");
+          localStorage.removeItem("refreshToken");
           setUser(null);
           // Disconnect socket on auth failure
           if (socket.connected) {
@@ -203,7 +210,13 @@ export default function AuthProvider({ children }) {
     try {
       const res = await API.post("/auth/verify-otp", payload);
       if (res?.data?.user) {
-        setUser(res.data.user);
+        // Ensure role is set (default to USER)
+        const userData = {
+          ...res.data.user,
+          role: res.data.user.role || 'USER'
+        };
+        setUser(userData);
+        
         // backend may return either `token` or `accessToken` depending on implementation
         const token = res.data.token || res.data.accessToken;
         const refreshToken = res.data.refreshToken;
@@ -235,9 +248,23 @@ export default function AuthProvider({ children }) {
           localStorage.setItem("refreshToken", refreshToken);
         }
         
-        // Get full user data after registration
-        const userRes = await API.get("/auth/me");
-        setUser(userRes.data.user);
+        // Set user immediately from registration response with role
+        const userData = {
+          ...res.data.user,
+          role: res.data.user.role || 'USER'  // Ensure role is set
+        };
+        setUser(userData);
+        
+        // Then fetch full user data to update profile completeness and other details
+        try {
+          const userRes = await API.get("/auth/me");
+          if (userRes?.data?.user) {
+            setUser(userRes.data.user);
+          }
+        } catch (err) {
+          console.warn("Failed to fetch full user profile after registration:", err);
+          // Keep the user set from registration response
+        }
       }
       showAlert("Registration successful!", "success", 3000);
       return res;
@@ -262,8 +289,13 @@ export default function AuthProvider({ children }) {
         if (refreshToken) {
           localStorage.setItem("refreshToken", refreshToken);
         }
-        // Set user from login response
-        setUser(res.data.user || res.data);
+        // Set user from login response with default role
+        const userData = {
+          ...(res.data.user || res.data),
+          role: (res.data.user?.role || res.data?.role) || 'USER'
+        };
+        setUser(userData);
+        
         // Fetch profile immediately after login to ensure UI updates
         try {
           const profileRes = await API.get("/auth/me", {
@@ -272,20 +304,28 @@ export default function AuthProvider({ children }) {
               'Authorization': `Bearer ${token}`
             }
           });
-          if (profileRes?.data) {
-            setUser(profileRes.data);
+          if (profileRes?.data?.user) {
+            const fullUserData = {
+              ...profileRes.data.user,
+              role: profileRes.data.user.role || 'USER'
+            };
+            setUser(fullUserData);
           } else if (res?.data?.user) {
-            setUser(res.data.user);
+            setUser(userData);
           }
         } catch (profileError) {
           console.warn("Profile fetch failed after login, using response data:", profileError);
           // Fallback to user data from login response
           if (res?.data?.user) {
-            setUser(res.data.user);
+            setUser(userData);
           }
         }
       } else if (res?.data?.user) {
-        setUser(res.data.user);
+        const userData = {
+          ...res.data.user,
+          role: res.data.user.role || 'USER'
+        };
+        setUser(userData);
       }
       showAlert("Login successful!", "success", 3000);
       // Connect socket after successful login

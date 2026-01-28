@@ -22,8 +22,10 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  // If user has admin role, redirect to admin dashboard
+  // If user has admin role (not USER), redirect to admin dashboard
+  // Explicitly check for non-USER roles
   if (user.role && user.role !== 'USER') {
+    console.warn('[ProtectedRoute] User role is not USER:', user.role, 'Redirecting to admin-dashboard');
     return <Navigate to="/admin-dashboard" replace />;
   }
 
