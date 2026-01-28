@@ -386,6 +386,7 @@ export default function LandingPage() {
               </div>
             )}
         </div>
+        </div>
 
         {/* Progress bar */}
         <div className="progress-container" style={{ width: "100%", margin: "10px 0" }}>

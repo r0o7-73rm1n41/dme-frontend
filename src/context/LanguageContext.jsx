@@ -308,36 +308,6 @@ const translations = {
     languageDesc: "अपनी पसंदीदा भाषा चुनें",
     english: "English",
     hindi: "हिंदी",
-    about: "के बारे में",
-    appVersion: "ऐप संस्करण:",
-    buildDate: "बिल्ड तारीख:",
-    developer: "डेवलपर:",
-    developerName: "fcityonline टीम",
-    dangerZone: "खतरे का क्षेत्र",
-    deleteAccount: "खाता हटाएं",
-    deleteAccountDesc: "अपने खाते और सभी डेटा को स्थायी रूप से हटाएं",
-    cancel: "रद्द करें",
-    confirm: "पुष्टि करें",
-    delete: "हटाएं",
-    close: "बंद करें",
-    loading: "लोड हो रहा है...",
-    success: "सफलता",
-    error: "त्रुटि",
-
-    // Profile related
-    name: "नाम",
-    phone: "फोन",
-    email: "ईमेल",
-    password: "पासवर्ड",
-    oldPassword: "पुराना पासवर्ड",
-    newPassword: "नया पासवर्ड",
-    confirmPassword: "पासवर्ड की पुष्टि करें",
-
-    // Status messages
-    profileUpdated: "प्रोफ़ाइल सफलतापूर्वक अपडेट हुई",
-    passwordChanged: "पासवर्ड सफलतापूर्वक बदला गया",
-    preferencesSaved: "प्राथमिकताएं सेव की गईं",
-    accountDeleted: "खाता सफलतापूर्वक हटाया गया",
 
     // Landing Page
     upcomingQuiz: "आगामी क्विज़",
@@ -365,70 +335,7 @@ const translations = {
     contactEmail: "ईमेल: dailymind.edu@gmail.com",
     ageVerification: "आयु सत्यापन: राज्य करें कि उपयोगकर्ताओं को प्रवेश शुल्क का भुगतान करने के लिए 18+ होना चाहिए। यदि वे नाबालिग हैं (13-17), तो अब कानूनी रूप से सत्यापन योग्य अभिभावकीय सहमति तंत्र लागू करना आवश्यक है।",
     stateRestrictions: "राज्य प्रतिबंध: एक बोल्ड नोटिस जोड़ें: \"आंध्र प्रदेश, असम, ओडिशा, तेलंगाना, तमिलनाडु, नागालैंड और सिक्किम के निवासियों के लिए भुगतान किए गए प्रतियोगिताओं में भागीदारी सख्त वर्जित है\"।",
-    regulations: "यह शैक्षिक प्लेटफॉर्म भारत के छात्रों के लिए अभिप्रेत है। सभी लेनदेन भारतीय नियमों का पालन करते हैं। भागीदारी नियमों और शर्तों के अधीन है।",
-
-    // Quiz related
-    joinQuiz: "क्विज़ में शामिल हों",
-    viewQuiz: "क्विज़ देखें",
-    pay5: "₹5 का भुगतान करें",
-    quizLive: "क्विज़ लाइव",
-    timeLeft: "शेष समय",
-    question: "प्रश्न",
-    next: "अगला",
-    submit: "सबमिट करें",
-
-    // Winners page
-    top20Winners: "शीर्ष 20 विजेता",
-    rank: "रैंक",
-    score: "स्कोर",
-    accuracy: "सटीकता",
-    time: "समय",
-
-    // Auth related
-    login: "लॉगिन",
-    register: "रजिस्टर",
-    forgotPassword: "पासवर्ड भूल गए",
-    resetPassword: "पासवर्ड रीसेट करें",
-    sendOTP: "OTP भेजें",
-    verifyOTP: "OTP सत्यापित करें",
-    resendOTP: "OTP पुनः भेजें",
-
-    // Payment related
-    payNow: "अभी भुगतान करें",
-    paymentSuccessful: "भुगतान सफल",
-    paymentFailed: "भुगतान विफल",
-    paymentPending: "भुगतान लंबित",
-
-    // Blog related
-    blogs: "ब्लॉग",
-    createBlog: "ब्लॉग बनाएं",
-    editBlog: "ब्लॉग संपादित करें",
-    deleteBlog: "ब्लॉग हटाएं",
-    like: "लाइक",
-    unlike: "अनलाइक",
-    comments: "टिप्पणियां",
-
-    // Admin panel
-    adminPanel: "एडमिन पैनल",
-    manageUsers: "उपयोगकर्ताओं को प्रबंधित करें",
-    manageQuizzes: "क्विज़ प्रबंधित करें",
-    manageBlogs: "ब्लॉग प्रबंधित करें",
-    viewPayments: "भुगतान देखें",
-    viewWinners: "विजेताओं को देखें",
-
-    // Error messages
-    networkError: "नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।",
-    invalidCredentials: "अमान्य क्रेडेंशियल",
-    userNotFound: "उपयोगकर्ता नहीं मिला",
-    quizNotFound: "क्विज़ नहीं मिला",
-    paymentRequired: "भुगतान आवश्यक",
-    insufficientPermissions: "अपर्याप्त अनुमतियां",
-
-    // Success messages
-    quizCompleted: "क्विज़ सफलतापूर्वक पूरा हुआ!",
-    blogCreated: "ब्लॉग सफलतापूर्वक बनाया गया",
-    blogUpdated: "ब्लॉग सफलतापूर्वक अपडेट किया गया",
-    blogDeleted: "ब्लॉग सफलतापूर्वक हटाया गया"
+    regulations: "यह शैक्षिक प्लेटफॉर्म भारत के छात्रों के लिए अभिप्रेत है। सभी लेनदेन भारतीय नियमों का पालन करते हैं। भागीदारी नियमों और शर्तों के अधीन है।"
   }
 };
 
