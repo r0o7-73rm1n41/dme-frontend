@@ -571,7 +571,7 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .quiz-container {
-    background: linear-gradient(135deg, #222222 0%, #222222 100%);
+    background: #222222;
   }
 
   .quiz-card,

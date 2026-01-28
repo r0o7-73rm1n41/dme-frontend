@@ -538,8 +538,12 @@ function PostCard({ post, onLike, currentUser }) {
   const handleReport = async () => {
     if (!reportReason) return alert("Please select a reason");
     try {
+      const reportedUserId = post.author?._id || post.userId;
+      if (!reportedUserId) return alert("Unable to report this user");
+      
       await API.post("/reports/user", {
         blogId: post._id,
+        reportedUserId: reportedUserId,
         reason: reportReason,
         description: reportDescription,
       });
