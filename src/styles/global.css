@@ -426,13 +426,13 @@ body.dark .bottom-nav {
 }
 
 .countdown-block {
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 12px 10px;
-  min-width: 60px;
+  background: linear-gradient(135deg, #667eea00, #764ba200);
+  border-radius: 12px;
+  padding: 20px 15px;
+  min-width: 80px;
   text-align: center;
   backdrop-filter: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px #0000004d;
 }
 
 .countdown-number {
