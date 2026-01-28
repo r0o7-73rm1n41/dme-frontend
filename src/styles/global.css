@@ -397,6 +397,7 @@ body.dark .bottom-nav {
 .countdown-wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 20px;
   padding: 20px;
   background-color: var(--deep-red);
@@ -404,6 +405,60 @@ body.dark .bottom-nav {
   width: fit-content;
   margin: 25px auto;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  flex-wrap: wrap;
+}
+
+/* Countdown Timer Section */
+.countdown-timer-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.countdown-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Courier New', monospace;
+}
+
+.countdown-block {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 12px 10px;
+  min-width: 60px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+
+.countdown-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.countdown-label {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 6px;
+}
+
+.countdown-separator {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 4px;
+}
+
+/* Status Badge Section */
+.status-badge-section {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
   flex-wrap: wrap;
 }
 
@@ -435,6 +490,16 @@ body.dark .bottom-nav {
     opacity: 1;
     transform: scale(1);
   }
+}
+
+/* Dark mode support for countdown */
+body.dark .countdown-wrapper {
+  background-color: rgba(230, 126, 126, 0.2);
+  border: 1px solid rgba(230, 126, 126, 0.3);
+}
+
+body.dark .countdown-block {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* Post / Note preview responsive styles */

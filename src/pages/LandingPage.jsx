@@ -26,6 +26,7 @@ export default function LandingPage() {
   const [readyMessage, setReadyMessage] = useState("");
   const [quizClass, setQuizClass] = useState(null);
   const [eligible, setEligible] = useState(false);
+  const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const totalStudents = 2000;
 
   // Listen for quiz state changes via socket
@@ -204,6 +205,38 @@ export default function LandingPage() {
     };
   }, [user]);
 
+  // Countdown timer for upcoming quiz (8 PM IST)
+  useEffect(() => {
+    const calculateCountdown = () => {
+      const now = new Date();
+      const today = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      
+      // Calculate 8:00 PM IST
+      const quizTime = new Date(today + 'T20:00:00');
+      const diffMs = quizTime - now;
+
+      if (diffMs <= 0) {
+        setCountdown({ hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      const totalSeconds = Math.floor(diffMs / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      setCountdown({ hours, minutes, seconds });
+    };
+
+    // Calculate immediately
+    calculateCountdown();
+
+    // Update every second
+    const interval = setInterval(calculateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleJoin = async () => {
     if (!user) {
       navigate("/login");
@@ -265,71 +298,93 @@ export default function LandingPage() {
         <div className="quiz-time">{t('quizStartsIn')}</div>
         <div className="time-highlight">08:00 PM to 08:30 PM</div>
 
-        {/* Status-based display */}
+        {/* Status and Countdown Display */}
         <div className="countdown-wrapper">
-          {quizState === 'loading' && (
-            <div className="countdown-item">
-              <span className="icon">⏳</span>
-              <span>{t('loading')}</span>
-              <div className="label">Status</div>
+          {/* Countdown Timer Section */}
+          <div className="countdown-timer-section">
+            <div className="countdown-display">
+              <div className="countdown-block">
+                <div className="countdown-number">{String(countdown.hours).padStart(2, '0')}</div>
+                <div className="countdown-label">Hours</div>
+              </div>
+              <div className="countdown-separator">:</div>
+              <div className="countdown-block">
+                <div className="countdown-number">{String(countdown.minutes).padStart(2, '0')}</div>
+                <div className="countdown-label">Minutes</div>
+              </div>
+              <div className="countdown-separator">:</div>
+              <div className="countdown-block">
+                <div className="countdown-number">{String(countdown.seconds).padStart(2, '0')}</div>
+                <div className="countdown-label">Seconds</div>
+              </div>
             </div>
-          )}
+          </div>
 
-          {quizState === 'NO_QUIZ' && (
-            <div className="countdown-item">
-              <span className="icon">🚫</span>
-              <span>{t('noQuiz')}</span>
-              <div className="label">{t('today')}</div>
-            </div>
-          )}
+          {/* Status Badge Section */}
+          <div className="status-badge-section">
+            {quizState === 'loading' && (
+              <div className="countdown-item">
+                <span className="icon">⏳</span>
+                <span>{t('loading')}</span>
+                <div className="label">Status</div>
+              </div>
+            )}
 
-          {quizState === 'DRAFT' && (
-            <div className="countdown-item">
-              <span className="icon">📝</span>
-              <span>Draft</span>
-              <div className="label">Mode</div>
-            </div>
-          )}
+            {quizState === 'NO_QUIZ' && (
+              <div className="countdown-item">
+                <span className="icon">🚫</span>
+                <span>{t('noQuiz')}</span>
+                <div className="label">{t('today')}</div>
+              </div>
+            )}
 
-          {quizState === 'SCHEDULED' && (
-            <div className="countdown-item">
-              <span className="icon">📅</span>
-              <span>Scheduled</span>
-              <div className="label">For Later</div>
-            </div>
-          )}
+            {quizState === 'DRAFT' && (
+              <div className="countdown-item">
+                <span className="icon">📝</span>
+                <span>Draft</span>
+                <div className="label">Mode</div>
+              </div>
+            )}
 
-          {quizState === 'LOCKED' && (
-            <div className="countdown-item">
-              <span className="icon">🔒</span>
-              <span>Locked</span>
-              <div className="label">Starting Soon</div>
-            </div>
-          )}
+            {quizState === 'SCHEDULED' && (
+              <div className="countdown-item">
+                <span className="icon">📅</span>
+                <span>Scheduled</span>
+                <div className="label">For Later</div>
+              </div>
+            )}
 
-          {quizState === 'LIVE' && (
-            <div className="countdown-item">
-              <span className="icon">🎯</span>
-              <span>Live</span>
-              <div className="label">Now</div>
-            </div>
-          )}
+            {quizState === 'LOCKED' && (
+              <div className="countdown-item">
+                <span className="icon">🔒</span>
+                <span>Locked</span>
+                <div className="label">Starting Soon</div>
+              </div>
+            )}
 
-          {(quizState === 'ENDED' || quizState === 'RESULT_PUBLISHED') && (
-            <div className="countdown-item">
-              <span className="icon">🏁</span>
-              <span>Ended</span>
-              <div className="label">Results Out</div>
-            </div>
-          )}
+            {quizState === 'LIVE' && (
+              <div className="countdown-item">
+                <span className="icon">🎯</span>
+                <span>Live</span>
+                <div className="label">Now</div>
+              </div>
+            )}
 
-          {quizState === 'ERROR' && (
-            <div className="countdown-item">
-              <span className="icon">❌</span>
-              <span>Error</span>
-              <div className="label">Loading Status</div>
-            </div>
-          )}
+            {(quizState === 'ENDED' || quizState === 'RESULT_PUBLISHED') && (
+              <div className="countdown-item">
+                <span className="icon">🏁</span>
+                <span>Ended</span>
+                <div className="label">Results Out</div>
+              </div>
+            )}
+
+            {quizState === 'ERROR' && (
+              <div className="countdown-item">
+                <span className="icon">❌</span>
+                <span>Error</span>
+                <div className="label">Loading Status</div>
+              </div>
+            )}
         </div>
 
         {/* Progress bar */}
