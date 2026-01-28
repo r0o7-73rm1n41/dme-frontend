@@ -167,6 +167,14 @@ const AdminPanel = () => {
       console.log('Admin API /admin/users response:', usersRes);
       console.log('usersRes.data:', usersRes.data);
       console.log('usersRes.data.users:', usersRes.data.users);
+      
+      // Debug: Log each user's classGrade
+      if (usersRes.data.users && Array.isArray(usersRes.data.users)) {
+        usersRes.data.users.forEach((u, idx) => {
+          console.log(`User ${idx}: ${u.name} - class="${u.class}", classGrade="${u.classGrade}"`);
+        });
+      }
+      
       setUsers(usersRes.data.users || []);
       
       // Load quizzes
