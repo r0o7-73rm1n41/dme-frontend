@@ -71,10 +71,14 @@ export default function RegisterPage() {
         setError("Please fill in all required fields");
         return;
       }
-      if (form.password.length < 6) {
-        setError("Password must be at least 6 characters");
+      
+      // Validate password strength
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,128}$/;
+      if (!passwordRegex.test(form.password)) {
+        setError("Password must be at least 8 characters with uppercase, lowercase, number, and special character (@$!%*?&)");
         return;
       }
+      
       if (!form.age || form.age < 13 || form.age > 99) {
         setError("Please enter a valid age (13-99)");
         return;
@@ -369,9 +373,9 @@ export default function RegisterPage() {
                     required
                   >
                     <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                    <option value="OTHER">Other</option>
                   </select>
                 </div>
 
@@ -404,12 +408,15 @@ export default function RegisterPage() {
                   <label>Password *</label>
                   <input
                     type="password"
-                    placeholder="Create a password (min 6 characters)"
+                    placeholder="Min 8 chars: uppercase, lowercase, number, special char (@$!%*?&)"
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
                     required
-                    minLength="6"
+                    minLength="8"
                   />
+                  <small style={{ color: '#666', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                    Password must contain: uppercase letter, lowercase letter, number, and special character
+                  </small>
                 </div>
 
                 <button type="submit" className="auth-button" disabled={loading}>
