@@ -258,10 +258,17 @@ export default function RegisterPage() {
         class: form.class,
         ...(form.phone && { phone: form.phone }) // include phone only if provided
       });
-      const token = res?.data?.accessToken;
-      if (token) {
-        localStorage.setItem("token", token);
+      
+      // Store both access and refresh tokens
+      const accessToken = res?.data?.accessToken;
+      const refreshToken = res?.data?.refreshToken;
+      if (accessToken) {
+        localStorage.setItem("token", accessToken);
       }
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
+      }
+      
       // Redirect to edit profile after successful registration
       nav("/edit-profile");
       return;

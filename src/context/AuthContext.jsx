@@ -206,7 +206,13 @@ export default function AuthProvider({ children }) {
         setUser(res.data.user);
         // backend may return either `token` or `accessToken` depending on implementation
         const token = res.data.token || res.data.accessToken;
-        if (token) localStorage.setItem("token", token);
+        const refreshToken = res.data.refreshToken;
+        if (token) {
+          localStorage.setItem("token", token);
+        }
+        if (refreshToken) {
+          localStorage.setItem("refreshToken", refreshToken);
+        }
       }
       return res;
     } catch (error) {
@@ -218,11 +224,20 @@ export default function AuthProvider({ children }) {
     try {
       const res = await API.post("/auth/register", payload);
       if (res?.data?.user) {
+        // Store both access and refresh tokens
+        const accessToken = res.data.accessToken;
+        const refreshToken = res.data.refreshToken;
+        
+        if (accessToken) {
+          localStorage.setItem("token", accessToken);
+        }
+        if (refreshToken) {
+          localStorage.setItem("refreshToken", refreshToken);
+        }
+        
         // Get full user data after registration
         const userRes = await API.get("/auth/me");
         setUser(userRes.data.user);
-        const token = res.data.token || res.data.accessToken;
-        if (token) localStorage.setItem("token", token);
       }
       showAlert("Registration successful!", "success", 3000);
       return res;

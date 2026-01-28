@@ -44,12 +44,17 @@ export default function AdminAuthProvider({ children }) {
         console.log('Setting admin:', admin);
         setAdmin(admin);
         
-        // Store admin token in localStorage for persistence
+        // Store admin tokens in localStorage for persistence
         const token = response.data.accessToken || response.data.token;
+        const refreshToken = response.data.refreshToken;
         if (token) {
           localStorage.setItem('adminToken', token);
           // Also set as regular token for API calls
           localStorage.setItem('token', token);
+        }
+        if (refreshToken) {
+          localStorage.setItem('adminRefreshToken', refreshToken);
+          localStorage.setItem('refreshToken', refreshToken);
         }
         return { success: true, data: response.data };
       }
@@ -67,9 +72,16 @@ export default function AdminAuthProvider({ children }) {
       const response = await API.post('/admin-auth/verify-otp', registrationData);
       if (response.data) {
         setAdmin(response.data.admin);
-        // Store admin token in localStorage for persistence
-        if (response.data.token) {
-          localStorage.setItem('adminToken', response.data.token);
+        // Store admin tokens in localStorage for persistence
+        const token = response.data.token || response.data.accessToken;
+        const refreshToken = response.data.refreshToken;
+        if (token) {
+          localStorage.setItem('adminToken', token);
+          localStorage.setItem('token', token);
+        }
+        if (refreshToken) {
+          localStorage.setItem('adminRefreshToken', refreshToken);
+          localStorage.setItem('refreshToken', refreshToken);
         }
         return { success: true, data: response.data };
       }
@@ -103,6 +115,9 @@ export default function AdminAuthProvider({ children }) {
     } finally {
       setAdmin(null);
       localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminRefreshToken');
+      localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
     }
   };
 
