@@ -736,13 +736,9 @@ body.dark .sidebar-item:hover {
 
 
 
-/* Quiz Countdown Banner */
+/* Quiz Countdown Banner - Removed from HomePage */
 .quiz-countdown-banner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px 15px;
-  margin: 0;
-  color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  display: none;
 }
 
 .countdown-content {
@@ -859,10 +855,6 @@ body.dark .sidebar-item:hover {
 }
 
 /* Dark mode support */
-body.dark .quiz-countdown-banner {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-  box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
-}
 
 /* Responsive design */
 @media (max-width: 768px) {
