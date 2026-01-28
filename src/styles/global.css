@@ -426,24 +426,25 @@ body.dark .bottom-nav {
 }
 
 .countdown-block {
-  background: transparent;
+  background: linear-gradient(135deg, #ffffff, #ffffff);
   border-radius: 6px;
   padding: 8px 6px;
   min-width: 50px;
   text-align: center;
   backdrop-filter: none;
+  box-shadow: 0 8px 24px #764ba24d;
 }
 
 .countdown-number {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #333333;
   line-height: 1;
 }
 
 .countdown-label {
   font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: #666666;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 6px;
@@ -452,7 +453,7 @@ body.dark .bottom-nav {
 .countdown-separator {
   font-size: 1.2rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
+  color: #999999;
   margin: 0 2px;
 }
 
