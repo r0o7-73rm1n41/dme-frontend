@@ -657,3 +657,10 @@
     border: 2px solid white;
   }
 }
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .quiz-container {
+    background: linear-gradient(135deg, #222222, #222222);
+  }
+}
