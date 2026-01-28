@@ -398,15 +398,15 @@ body.dark .bottom-nav {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
-  padding: 20px;
-  background-color: var(--deep-red);
-  border-radius: 15px;
-  width: fit-content;
-  margin: 25px auto;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  gap: 12px;
+  padding: 15px;
+  background-color: transparent;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 100%;
+  margin: 15px auto;
+  box-shadow: none;
   flex-wrap: wrap;
-  max-width: 90vw;
   overflow: hidden;
 }
 
@@ -426,16 +426,16 @@ body.dark .bottom-nav {
 }
 
 .countdown-block {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  padding: 12px 10px;
-  min-width: 60px;
+  background: transparent;
+  border-radius: 6px;
+  padding: 8px 6px;
+  min-width: 50px;
   text-align: center;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none;
 }
 
 .countdown-number {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #ffffff;
   line-height: 1;
@@ -450,10 +450,10 @@ body.dark .bottom-nav {
 }
 
 .countdown-separator {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0 4px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 2px;
 }
 
 /* Status Badge Section */
@@ -4971,5 +4971,37 @@ body.dark .notification-dropdown::-webkit-scrollbar-track {
     padding: 0;
     background: linear-gradient(to bottom, #3b060e, #200307);
     transition: all 0.3s ease;background: linear-gradient(to bottom, #3b060e, #200307, #1a0005);
+  }
+}
+
+/* Mobile responsive countdown sizing */
+@media (max-width: 600px) {
+  .countdown-wrapper {
+    gap: 8px;
+    padding: 10px;
+    margin: 10px auto;
+  }
+
+  .countdown-display {
+    gap: 6px;
+  }
+
+  .countdown-block {
+    min-width: 45px;
+    padding: 6px 4px;
+  }
+
+  .countdown-number {
+    font-size: 1.2rem;
+  }
+
+  .countdown-label {
+    font-size: 0.45rem;
+    margin-top: 2px;
+  }
+
+  .countdown-separator {
+    font-size: 1rem;
+    margin: 0 1px;
   }
 }
