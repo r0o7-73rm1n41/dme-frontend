@@ -164,6 +164,9 @@ const AdminPanel = () => {
       
       // Load users
       const usersRes = await AdminAPI.get('/admin/users');
+      console.log('Admin API /admin/users response:', usersRes);
+      console.log('usersRes.data:', usersRes.data);
+      console.log('usersRes.data.users:', usersRes.data.users);
       setUsers(usersRes.data.users || []);
       
       // Load quizzes
