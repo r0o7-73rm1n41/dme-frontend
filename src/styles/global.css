@@ -467,7 +467,7 @@ body.dark .bottom-nav {
 
 .countdown-item {
   text-align: center;
-  color: var(--red);
+  color: #ff0000;
   animation: fadeIn 0.5s ease-in;
 }
 .countdown-item .icon {
