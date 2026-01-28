@@ -17,9 +17,11 @@ export default function QuizPage() {
   const [quizError, setQuizError] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [disabled, setDisabled] = useState(false);
+  const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   const questionIntervalRef = useRef(null);
   const statusIntervalRef = useRef(null);
+  const countdownIntervalRef = useRef(null);
   const statusPollCountRef = useRef(0);
   const statusBackoffRef = useRef(30000); // Start with 30 second fallback polling
 
@@ -44,7 +46,44 @@ export default function QuizPage() {
     }
   };
 
-  // Connect socket and listen for quiz events
+  // Countdown timer for scheduled quiz
+  useEffect(() => {
+    const calculateCountdown = () => {
+      const now = new Date();
+      const today = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      
+      // Calculate 8:00 PM IST
+      const quizTime = new Date(today + 'T20:00:00');
+      const diffMs = quizTime - now;
+
+      if (diffMs <= 0) {
+        setCountdown({ hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      const totalSeconds = Math.floor(diffMs / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      setCountdown({ hours, minutes, seconds });
+    };
+
+    // Calculate immediately
+    calculateCountdown();
+
+    // Update every second when in DRAFT or SCHEDULED state
+    if (quizState === 'DRAFT' || quizState === 'SCHEDULED') {
+      countdownIntervalRef.current = setInterval(calculateCountdown, 1000);
+    }
+
+    return () => {
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+      }
+    };
+  }, [quizState]);
+
   useEffect(() => {
     if (!user) return;
 
@@ -239,8 +278,21 @@ export default function QuizPage() {
             <div className="quiz-waiting-text">
               The quiz will start at 8:00 PM IST. Get ready to test your knowledge!
             </div>
-            <div className="quiz-countdown">
-              Quiz begins in a few hours
+            <div className="quiz-countdown-display">
+              <div className="countdown-block">
+                <div className="countdown-number">{String(countdown.hours).padStart(2, '0')}</div>
+                <div className="countdown-label">Hours</div>
+              </div>
+              <div className="countdown-separator">:</div>
+              <div className="countdown-block">
+                <div className="countdown-number">{String(countdown.minutes).padStart(2, '0')}</div>
+                <div className="countdown-label">Minutes</div>
+              </div>
+              <div className="countdown-separator">:</div>
+              <div className="countdown-block">
+                <div className="countdown-number">{String(countdown.seconds).padStart(2, '0')}</div>
+                <div className="countdown-label">Seconds</div>
+              </div>
             </div>
           </div>
         </div>
