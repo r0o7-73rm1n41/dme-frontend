@@ -438,13 +438,13 @@ body.dark .bottom-nav {
 .countdown-number {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #333333;
+  color: #000000;
   line-height: 1;
 }
 
 .countdown-label {
   font-size: 0.65rem;
-  color: #666666;
+  color: #555555;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 6px;
@@ -498,6 +498,14 @@ body.dark .bottom-nav {
 /* Dark mode support for countdown */
 body.dark .countdown-block {
   background: #ffffff;
+}
+
+body.dark .countdown-number {
+  color: #ffffff;
+}
+
+body.dark .countdown-label {
+  color: #cccccc;
 }
 
 /* Post / Note preview responsive styles */
