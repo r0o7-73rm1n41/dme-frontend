@@ -72,23 +72,37 @@ export default function RegisterPage() {
         return;
       }
       
+      // Validate age
+      const age = parseInt(form.age);
+      if (isNaN(age) || age < 13 || age > 99) {
+        setError("You must be at least 13 years old to use this platform");
+        return;
+      }
+      
+      // Validate phone for SMS method
+      if (otpMethod === "sms") {
+        if (!form.phone || form.phone.length !== 10) {
+          setError("Phone number must be exactly 10 digits");
+          return;
+        }
+      }
+      
+      // Validate email for email method
+      if (otpMethod === "email") {
+        if (!form.email || !form.email.includes('@')) {
+          setError("Please enter a valid email address");
+          return;
+        }
+      }
+      
       // Validate password strength
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,128}$/;
       if (!passwordRegex.test(form.password)) {
         setError("Password must be at least 8 characters with uppercase, lowercase, number, and special character (@$!%*?&)");
         return;
       }
-      
-      if (!form.age || form.age < 13 || form.age > 99) {
-        setError("Please enter a valid age (13-99)");
-        return;
-      }
 
       if (otpMethod === "sms") {
-        if (!form.phone) {
-          setError("Phone is required for SMS OTP");
-          return;
-        }
         const res = await sendOtp(form.phone);
         const sessionId = res?.data?.sessionId || res?.data?.SessionId || res?.data?.Details || res?.data?.full?.SessionId || "";
         setSmsSessionId(sessionId);
@@ -336,9 +350,20 @@ export default function RegisterPage() {
                       type="tel"
                       placeholder="Enter your phone number"
                       value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                        setForm({ ...form, phone: value });
+                      }}
+                      maxLength="10"
+                      pattern="\d{10}"
+                      title="Phone number must be exactly 10 digits"
                       required
                     />
+                    {form.phone && form.phone.length !== 10 && (
+                      <small style={{ color: '#d32f2f', marginTop: '5px', display: 'block' }}>
+                        Phone number must be exactly 10 digits
+                      </small>
+                    )}
                   </div>
                 )}
 
